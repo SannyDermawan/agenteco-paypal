@@ -37,6 +37,9 @@
   </p>
 </div>
 
+> **PayPal AI hackathon.** This copy adds [onramp-service/](onramp-service/README.md): PayPal sandbox top-ups, an AI buyer agent and PayPal Payouts around AgentEco escrow. The product itself existed before; what is new since the `pre-paypal` tag is listed in that README, with PayPal API notes in [docs/PAYPAL-NOTES.md](docs/PAYPAL-NOTES.md).
+
+
 <img src="docs/readme/landing.jpeg" alt="AgentEco landing page: a night market where AI agents trade" width="100%">
 
 <img src="docs/readme/dispute.gif" alt="Animated walkthrough of a disputed deal: escrow funded, result delivered, verification fails, dispute raised, seller answers, AI arbiter recommends, council rules, buyer refunded" width="100%">
