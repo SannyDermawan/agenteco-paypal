@@ -9,6 +9,8 @@ Read on 20 Oct 2026 from developer.paypal.com. No sandbox credentials were avail
 - `PAYMENT.CAPTURE.COMPLETED` is the event for a completed capture (`resource_type: capture`).
 - The Agent Toolkit (`@paypal/agent-toolkit`) exposes PayPal functions to agent frameworks and MCP. It was not integrated: the direct REST calls above already cover the flow and are testable.
 
+Also confirmed from the endpoint reference pages (read later on 20 Oct 2026): create order requires `intent` (`CAPTURE` or `AUTHORIZE`) and `purchase_units[].amount` with `currency_code` and a string `value`; `PayPal-Request-Id` is an optional idempotency header of 1 to 10,000 characters; `verify-webhook-signature` requires `auth_algo`, `cert_url`, `transmission_id`, `transmission_sig`, `transmission_time`, `webhook_id` and `webhook_event`, and its documented success example is `verification_status: SUCCESS`.
+
 ## Assumed from general knowledge of the API (confirm with the first sandbox run)
 
 - The create-order body (`intent: CAPTURE`, `purchase_units[].amount`, `payment_source.paypal.experience_context` with `return_url`, `cancel_url`, `user_action: PAY_NOW`), the `PayPal-Request-Id` idempotency header, and the approval link appearing as `rel: payer-action` (the client also accepts the older `rel: approve`).
