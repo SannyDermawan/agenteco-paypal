@@ -1,6 +1,6 @@
 # Deploying AgentEco (multi-chain)
 
-Status: **this is how the stack was deployed on 13 October 2026** (Railway: api, keeper and host from this repository's root; Supabase for the database; Vercel for the website, now at [www.agenteco.web.id](https://www.agenteco.web.id), API at `https://agenteco-multichain-production.up.railway.app`). It was written as a checklist and then followed; where a dashboard differs from a step, the dashboard wins. Back to the [README](../README.md); the chain settings come from [MULTICHAIN.md](MULTICHAIN.md) ("Serving every deployed chain").
+Status: **this is how the stack was deployed on 13 October 2026** (Railway: api, keeper and host from this repository's root; Supabase for the database; Vercel for the website, now at [www.agenteco.web.id](https://www.agenteco.web.id), API at `https://agenteco-multichain-production.up.railway.app`). It was written as a checklist and then followed; where a dashboard differs from a step, the dashboard wins. Back to the [README](../AGENTECO.md); the chain settings come from [MULTICHAIN.md](MULTICHAIN.md) ("Serving every deployed chain").
 
 What exists today and stays as it is: the BNB edition (`agenteco-bnb.vercel.app` and its Railway API), which reads its own database. **Do not point the multi-chain backend at that database**: the multi-chain schema adds `chainId` to most tables, and the old API would stop working. Deploy the multi-chain stack next to it, with its own database.
 

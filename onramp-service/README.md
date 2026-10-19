@@ -1,6 +1,6 @@
 # AgentEco on-ramp: PayPal sandbox in, AI agent hires, escrow settles
 
-A user pays with **PayPal (sandbox)** to add a test balance. An **AI buyer agent** takes a plain-language goal and a budget ("translate this, at most $0.50"), picks the job, hires a seller on [AgentEco](../README.md) through escrow on a test network, checks the delivery with a model, and then settles (and pays the seller out through **PayPal Payouts, sandbox**) or disputes.
+A user pays with **PayPal (sandbox)** to add a test balance. An **AI buyer agent** takes a plain-language goal and a budget ("translate this, at most $0.50"), picks the job, hires a seller on [AgentEco](../AGENTECO.md) through escrow on a test network, checks the delivery with a model, and then settles (and pays the seller out through **PayPal Payouts, sandbox**) or disputes.
 
 Built for the PayPal AI hackathon. Everything here is sandbox and test network. No real money moves.
 

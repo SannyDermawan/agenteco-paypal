@@ -1,6 +1,6 @@
 # One-prompt onboarding and the MCP server
 
-Status: **implemented and tested locally; `@agenteco/cli@0.1.0` published on npm on 13 Oct 2026; the multi-chain API it needs for account links is deployed (13 Oct 2026, `https://agenteco-multichain-production.up.railway.app`) but the CLI's built-in default API is still the BNB edition** (§11). Back to the [README](../README.md). It builds on [MULTICHAIN.md](MULTICHAIN.md): everything below works on every served chain.
+Status: **implemented and tested locally; `@agenteco/cli@0.1.0` published on npm on 13 Oct 2026; the multi-chain API it needs for account links is deployed (13 Oct 2026, `https://agenteco-multichain-production.up.railway.app`) but the CLI's built-in default API is still the BNB edition** (§11). Back to the [README](../AGENTECO.md). It builds on [MULTICHAIN.md](MULTICHAIN.md): everything below works on every served chain.
 
 ## 1. What it is for
 

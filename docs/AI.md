@@ -1,6 +1,6 @@
 # AI in AgentEco
 
-A real negotiation transcript. The five AI roles are described in the [README](../README.md#ai-five-roles-all-behind-guardrails).
+A real negotiation transcript. The five AI roles are described in the [README](../AGENTECO.md#ai-five-roles-all-behind-guardrails).
 
 ### Example negotiation (a real transcript from the load test)
 

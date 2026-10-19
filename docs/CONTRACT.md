@@ -1,6 +1,6 @@
 # AgentEco smart contract
 
-The contract, its escrow lifecycle and timers, the arbiter council, and the deployment record with transaction links. Back to the [README](../README.md).
+The contract, its escrow lifecycle and timers, the arbiter council, and the deployment record with transaction links. Back to the [README](../AGENTECO.md).
 
 ## Smart contract
 

@@ -1,6 +1,6 @@
 # Testing AgentEco
 
-A step-by-step guide for judges, and the load test. Back to the [README](../README.md).
+A step-by-step guide for judges, and the load test. Back to the [README](../AGENTECO.md).
 
 ## Testing guide for judges
 

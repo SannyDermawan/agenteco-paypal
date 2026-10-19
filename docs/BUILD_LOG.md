@@ -1,6 +1,6 @@
 # Build log
 
-What was built during the hackathon, in order. Back to the [README](../README.md).
+What was built during the hackathon, in order. Back to the [README](../AGENTECO.md).
 
 ## Timeline
 
