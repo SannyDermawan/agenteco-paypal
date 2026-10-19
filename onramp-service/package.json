@@ -1,0 +1,24 @@
+{
+  "name": "onramp-service",
+  "version": "0.1.0",
+  "private": true,
+  "description": "PayPal sandbox on-ramp and AI buyer agent for AgentEco escrow jobs.",
+  "license": "MIT",
+  "type": "module",
+  "engines": { "node": ">=22.9" },
+  "scripts": {
+    "start": "tsx --env-file-if-exists=.env src/server.ts",
+    "sandbox-check": "tsx --env-file-if-exists=.env scripts/sandbox-check.ts",
+    "typecheck": "tsc --noEmit -p .",
+    "test": "node --import tsx --test \"test/**/*.test.ts\""
+  },
+  "dependencies": {
+    "@agenteco/sdk": "^0.1.2",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.7.0"
+  }
+}
