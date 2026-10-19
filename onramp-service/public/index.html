@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>AgentEco on-ramp</title>
+<style>
+:root{--bg:#f7f7fc;--fg:#14162b;--mut:#565a78;--card:#fff;--line:#dcdcee;--acc:#4b4fd8;--accfg:#fff;--ok:#0a8a5c;--bad:#b42318;--warn:#8a5a00;--warnbg:#fff6e0}
+@media (prefers-color-scheme:dark){:root{--bg:#0b0c1c;--fg:#f2f3fa;--mut:#a7aac0;--card:#14162b;--line:#272a48;--acc:#8e91ff;--accfg:#10112a;--ok:#35d49a;--bad:#ff8a80;--warn:#fbbf24;--warnbg:#2a2210}}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.55 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:760px;margin:0 auto;padding:32px 16px 80px}
+h1{font-size:1.8rem;margin:0 0 6px}h2{font-size:1.1rem;margin:0 0 10px}p.lead{color:var(--mut);margin:0 0 20px}
+.banner{padding:10px 14px;border:1px solid var(--warn);background:var(--warnbg);color:var(--warn);border-radius:10px;font-size:.92rem;margin-bottom:18px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;margin:14px 0}
+label{display:block;font-size:.85rem;color:var(--mut);margin:8px 0 4px}
+input,textarea{width:100%;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--fg);font:inherit}
+textarea{min-height:96px;resize:vertical}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:end}.row>*{flex:1 1 140px}
+button{padding:10px 16px;border:0;border-radius:10px;background:var(--acc);color:var(--accfg);font:inherit;font-weight:600;cursor:pointer}
+button[disabled]{opacity:.6;cursor:wait}
+.balance{font-size:1.6rem;font-weight:700}.mut{color:var(--mut);font-size:.85rem}
+.ok{color:var(--ok)}.bad{color:var(--bad)}
+pre{white-space:pre-wrap;word-break:break-word;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px;font-size:.85rem}
+</style>
+</head>
+<body>
+<main>
+  <h1>AgentEco on-ramp</h1>
+  <p class="lead">Pay with PayPal (sandbox), and an AI buyer agent hires an AgentEco seller for you through escrow on a test network.</p>
+  <div class="banner" id="banner">Sandbox and test network only. No real money moves. The balance is a test balance, 1 USD = 1 test token at a fixed demo rate, and the wallet is held by this demo server (custodial, not a product).</div>
+  <div class="card"><label for="user">Test user name</label><input id="user" value="demo-user" maxlength="40" autocomplete="off"></div>
+  <div class="card">
+    <h2>1. Add test balance with PayPal</h2>
+    <div class="row"><div><label for="amount">Amount (USD, 1 to 50)</label><input id="amount" type="number" min="1" max="50" step="1" value="5"></div><div><button id="pay">Pay with PayPal</button></div></div>
+    <p class="mut" id="payNote"></p>
+    <p>Balance: <span class="balance" id="balance">$0.00</span></p>
+  </div>
+  <div class="card">
+    <h2>2. Give the agent a goal and a budget</h2>
+    <label for="goal">Goal (translate a text, or analyse a small CSV)</label>
+    <textarea id="goal" placeholder='Translate "Thank you for your order, it will arrive on Friday." to Indonesian'></textarea>
+    <div class="row"><div><label for="budget">Maximum budget (USD)</label><input id="budget" type="number" min="0.01" max="50" step="0.01" value="0.5"></div><div><button id="run">Run the agent</button></div></div>
+    <div id="job"></div>
+  </div>
+  <div class="card"><h2>Your jobs</h2><div id="jobs" class="mut">None yet.</div></div>
+</main>
+<script>
+const $ = (id) => document.getElementById(id)
+const money = (c) => '$' + (c / 100).toFixed(2)
+const user = () => $('user').value.trim()
+async function api(path, body) {
+  const res = await fetch(path, body === undefined ? undefined : { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body) })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.detail || data.error || 'HTTP ' + res.status)
+  return data
+}
+async function refresh() {
+  try {
+    const u = await api('/api/users/' + encodeURIComponent(user()))
+    $('balance').textContent = money(u.balanceCents)
+    $('jobs').textContent = u.jobs.length ? '' : 'None yet.'
+    for (const j of u.jobs.slice().reverse()) {
+      const d = document.createElement('div'); d.style.margin = '8px 0'
+      d.textContent = j.status.toUpperCase() + ' · ' + (j.capability || 'n/a') + ' · charged ' + money(j.chargedCents) + (j.escrowId ? ' · escrow #' + j.escrowId : '') + (j.payout ? ' · payout: ' + (j.payout.simulated ? 'simulated' : j.payout.status) : '') + (j.error ? ' · ' + j.error : '')
+      $('jobs').append(d)
+    }
+  } catch (e) { /* user name not valid yet */ }
+}
+$('user').onchange = refresh
+$('pay').onclick = async () => {
+  $('pay').disabled = true; $('payNote').textContent = ''
+  try {
+    const t = await api('/api/topups', { userId: user(), amountUsd: Number($('amount').value) })
+    sessionStorage.setItem('pendingOrder', t.orderId)
+    if (!t.approveUrl) throw new Error('PayPal did not return an approval link.')
+    location.href = t.approveUrl
+  } catch (e) { $('payNote').textContent = e.message; $('payNote').className = 'bad' }
+  finally { $('pay').disabled = false }
+}
+$('run').onclick = async () => {
+  $('run').disabled = true; $('job').textContent = 'The agent is planning and hiring a seller... this can take a minute.'
+  try {
+    const j = await api('/api/jobs', { userId: user(), goal: $('goal').value, maxBudgetUsd: Number($('budget').value) })
+    const pre = document.createElement('pre')
+    pre.textContent = JSON.stringify({ status: j.status, capability: j.capability, escrowId: j.escrowId, charged: money(j.chargedCents), payout: j.payout, error: j.error, result: j.result }, null, 2)
+    $('job').replaceChildren(pre)
+  } catch (e) { $('job').textContent = e.message }
+  finally { $('run').disabled = false; refresh() }
+}
+// Back from PayPal: capture the order the buyer just approved.
+;(async () => {
+  const order = sessionStorage.getItem('pendingOrder')
+  if (order && new URLSearchParams(location.search).get('paypal') === 'return') {
+    sessionStorage.removeItem('pendingOrder')
+    try {
+      const c = await api('/api/topups/' + encodeURIComponent(order) + '/capture', {})
+      $('payNote').textContent = c.credited ? 'Payment received, balance updated.' : 'Status: ' + c.status
+      $('payNote').className = c.credited ? 'ok' : 'mut'
+    } catch (e) { $('payNote').textContent = e.message; $('payNote').className = 'bad' }
+    history.replaceState(null, '', '/')
+  }
+  const cfg = await api('/api/config').catch(() => null)
+  if (cfg && (!cfg.paypal || !cfg.agent)) {
+    $('banner').textContent += ' Not configured on this server yet: ' + [!cfg.paypal && 'PayPal sandbox', !cfg.agent && 'the buyer agent (AI model and testnet wallet)'].filter(Boolean).join(' and ') + '.'
+  }
+  refresh()
+})()
+</script>
+</body>
+</html>
